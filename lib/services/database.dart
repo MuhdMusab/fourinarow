@@ -49,11 +49,8 @@ void checkOpponent(GlobalKey<FormState> opponentFormKey, String username, TextEd
         Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (_) => BlocProvider(
-                create: (__) => BlocProvider.of<InternetCubit>(context),
-                child: GameScreen(firstUser: username,
-                  secondUser: opponentUsername, gameroomId: gameroomId,),
-              ),
+              builder: (_) => GameScreen(firstUser: username,
+                secondUser: opponentUsername, gameroomId: gameroomId,),
             ));
       } else {
         print('does not contain');
