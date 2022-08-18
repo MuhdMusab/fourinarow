@@ -20,10 +20,12 @@ class Gameroom {
 
   Map<String, dynamic> toJson(String gameroomId) {
     Map<String, dynamic> map = {
+    'isAboutToDelete': false,
     'gameroomId': gameroomId,
     'firstUser': firstUser,
     'secondUser': secondUser,
     'isFirstUserTurn': true,
+    'winner': "unknown",
     };
     for (int i = 0; i < 7 * 6; i++) {
       map[i.toString()] = {

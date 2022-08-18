@@ -57,7 +57,6 @@ class _PlayScreenState extends State<PlayScreen> {
             if (dialogContext != null) {
               Navigator.pop(dialogContext!);
             }
-            //ScaffoldMessenger.of(context).removeCurrentSnackBar();
           } else if (state is InternetDisconnected) {
             showDialog(
                 barrierDismissible: false,
@@ -66,12 +65,6 @@ class _PlayScreenState extends State<PlayScreen> {
                   dialogContext = context;
                   return UncancellableDialogBox(title: 'Error', text: 'You do not have internet access');
                 });
-            // ScaffoldMessenger.of(context).showSnackBar(
-            //     SnackBar(
-            //       content: Text("You are not connected to Wifi or Mobile!"),
-            //       duration: Duration(days: 1000),
-            //     )
-            // );
           }
         },
         child: SafeArea(
