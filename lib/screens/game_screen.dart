@@ -51,7 +51,8 @@ class _GameScreenState extends State<GameScreen> {
         Navigator.of(context, rootNavigator: true).pop();
         popFunction();
       }
-      if (map != null && map.containsKey("winner") && map["winner"] == widget.secondUser) {
+      if (map != null && map.containsKey("winner") && map["winner"] == widget.secondUser
+          && map.containsKey("winner") && map["isAboutToDelete"] == false) {
         showDialog(
             context: context,
             builder: (BuildContext dialogContext) {
