@@ -30,15 +30,6 @@ class BoardTile extends StatefulWidget {
 }
 
 class _BoardTileState extends State<BoardTile> {
-  void listenToDoc() {
-    FirebaseFirestore.instance.collection('gamerooms')
-        .doc(widget.gameroomId).snapshots(includeMetadataChanges: true).listen((DocumentSnapshot<Map<String, dynamic>> event) {
-      print("hello");
-      print(event);
-      print(event.data());
-    });
-  }
-
   void popFunction() async {
     final db = FirebaseFirestore.instance.collection('gamerooms').doc(widget.gameroomId);
     db.update({
@@ -46,10 +37,6 @@ class _BoardTileState extends State<BoardTile> {
       });
     Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
         builder: (context) => PlayScreen()), (Route route) => false);
-    // int count = 0;
-    // Navigator.popUntil(context, (route) {
-    //   return count++ == 2;
-    // });
     await Future.delayed(const Duration(seconds: 5));
     FirebaseFirestore.instance.collection('gamerooms')
         .doc(widget.gameroomId).delete();
@@ -66,6 +53,7 @@ class _BoardTileState extends State<BoardTile> {
   }
 
   Future<bool> didWinVertical(int tileIndex) async {
+    print("vertical");
     DocumentSnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore.instance.collection('gamerooms')
         .doc(widget.gameroomId).get();
     int row = (tileIndex / 7).floor();
@@ -94,10 +82,11 @@ class _BoardTileState extends State<BoardTile> {
           db.update({
             "winner": widget.firstUser,
             "isFirstUserTurn": !widget.isFirstUserTurn,
-            widget.boardIndex.toString(): {
-              "index": widget.boardIndex,
+            tileIndex.toString(): {
+              "index": tileIndex,
               "player": widget.firstUser,
-            }});
+            }
+          });
           return true;
         }
       }
@@ -106,13 +95,12 @@ class _BoardTileState extends State<BoardTile> {
   }
 
   Future<bool> didWinDiagonal(int tileIndex) async {
+    print("diagonal");
     DocumentSnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
         .instance.collection('gamerooms')
         .doc(widget.gameroomId).get();
     int row = (tileIndex / 7).floor();
     int col = tileIndex - row * 7 + 1 == 0 ? 7 : tileIndex - row * 7 + 1;
-    print("Row: " + row.toString() +" Col: " + col.toString());
-    print("\n");
     for (int i = -3; i <= 0; i++) {
       if (col + i < 1 || col + i + 3 > 7 || row + i < 0 || row + i + 3 > 5) {
         continue;
@@ -138,10 +126,11 @@ class _BoardTileState extends State<BoardTile> {
           db.update({
             "winner": widget.firstUser,
             "isFirstUserTurn": !widget.isFirstUserTurn,
-            widget.boardIndex.toString(): {
-              "index": widget.boardIndex,
+            tileIndex.toString(): {
+              "index": tileIndex,
               "player": widget.firstUser,
-            }});
+            }
+          });
           return true;
         }
       }
@@ -171,10 +160,11 @@ class _BoardTileState extends State<BoardTile> {
           db.update({
             "winner": widget.firstUser,
             "isFirstUserTurn": !widget.isFirstUserTurn,
-            widget.boardIndex.toString(): {
-              "index": widget.boardIndex,
+            tileIndex.toString(): {
+              "index": tileIndex,
               "player": widget.firstUser,
-            }});
+            }
+          });
           return true;
         }
       }
@@ -182,7 +172,44 @@ class _BoardTileState extends State<BoardTile> {
     return false;
   }
 
+  Future<bool> hasEmptyTileBelow(int tileIndex) async {
+    DocumentSnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore.instance.collection('gamerooms')
+        .doc(widget.gameroomId).get();
+    int row = (tileIndex / 7).floor();
+    int col = tileIndex - row * 7 + 1 == 0 ? 7 : tileIndex - row * 7 + 1;
+    for (int i = 5; i > row; i--) {
+      int currIndex = i * 7 + col - 1;
+      if (snapshot.data() == null) {
+        return false;
+      } else {
+        if (snapshot.data()!.containsKey(currIndex.toString()) && snapshot.data()![currIndex.toString()]["player"] == "unknown") {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  Future<int> getEmptyTileBelow(int tileIndex) async {
+    DocumentSnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore.instance.collection('gamerooms')
+        .doc(widget.gameroomId).get();
+    int row = (tileIndex / 7).floor();
+    int col = tileIndex - row * 7 + 1 == 0 ? 7 : tileIndex - row * 7 + 1;
+    for (int i = 5; i > row; i--) {
+      int currIndex = i * 7 + col - 1;
+      if (snapshot.data() == null) {
+        return -1;
+      } else {
+        if (snapshot.data()!.containsKey(currIndex.toString()) && snapshot.data()![currIndex.toString()]["player"] == "unknown") {
+          return currIndex;
+        }
+      }
+    }
+    return -1;
+  }
+
   Future<bool> didWinHorizontal(int tileIndex) async {
+    print("horizontal");
     DocumentSnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore.instance.collection('gamerooms')
                                                             .doc(widget.gameroomId).get();
     int row = (tileIndex / 7).floor();
@@ -196,7 +223,6 @@ class _BoardTileState extends State<BoardTile> {
           int currCol = col + i - 1 + j;
           int currIndex = row * 7 + currCol;
           if (snapshot.data() == null) {
-            totalBool = false;
             return false;
           } else {
             bool isTrue = snapshot.data()![currIndex.toString()]["player"] == widget.firstUser;
@@ -211,20 +237,17 @@ class _BoardTileState extends State<BoardTile> {
           db.update({
             "winner": widget.firstUser,
             "isFirstUserTurn": !widget.isFirstUserTurn,
-            widget.boardIndex.toString(): {
-              "index": widget.boardIndex,
+            tileIndex.toString(): {
+              "index": tileIndex,
               "player": widget.firstUser,
-            }});
+            }
+          });
           return true;
         }
       }
     }
     return false;
   }
-
-  // bool didWin(int tileIndex) async {
-  //
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -235,7 +258,39 @@ class _BoardTileState extends State<BoardTile> {
           DocumentSnapshot<Map<String, dynamic>> snapshot = await db.get();
           if (snapshot.data() != null && snapshot.data()!.containsKey(widget.boardIndex.toString())
               && (snapshot.data()![widget.boardIndex.toString()] as Map<String, dynamic>)["player"] == "unknown") {
-            if (widget.isFirstUser && widget.isFirstUserTurn || !widget.isFirstUser && !widget.isFirstUserTurn) {
+            if (await hasEmptyTileBelow(tileIndex) && widget.isFirstUser && widget.isFirstUserTurn
+                || !widget.isFirstUser && !widget.isFirstUserTurn) {
+              int tileToChange = await getEmptyTileBelow(tileIndex);
+              if (tileToChange != -1) {
+                print("updated " + tileToChange.toString());
+                db.update({
+                  "isFirstUserTurn": !widget.isFirstUserTurn,
+                  tileToChange.toString(): {
+                    "index": tileToChange,
+                    "player": widget.firstUser,
+                  }});
+                if (await didWinDiagonal(tileToChange) || await didWinVertical(tileToChange)
+                    || await didWinHorizontal(tileToChange)) {
+                  showDialog(
+                      barrierDismissible: false,
+                      context: context,
+                      builder: (BuildContext context) {
+                        return DoubleOptionDialogBox(
+                          title: 'Congratulations!',
+                          text: "You've won the game",
+                          firstFunction: restartBoard,
+                          secondFunction: popFunction,
+                          firstOptionText: "Play again",
+                          secondOptionText: "Exit",
+                          firstUser: widget.firstUser,
+                          secondUser: widget.secondUser,
+                          gameroomId: widget.gameroomId,
+                        );
+                      });
+                }
+              }
+            } else if (widget.isFirstUser && widget.isFirstUserTurn || !widget.isFirstUser && !widget.isFirstUserTurn) {
+              print("updated " + tileIndex.toString());
               db.update({
                 "isFirstUserTurn": !widget.isFirstUserTurn,
                 widget.boardIndex.toString(): {
@@ -244,7 +299,6 @@ class _BoardTileState extends State<BoardTile> {
                 }});
               if (await didWinDiagonal(tileIndex) || await didWinVertical(tileIndex)
                   || await didWinHorizontal(tileIndex)) {
-                print("Yes correct diagonal");
                 showDialog(
                     barrierDismissible: false,
                     context: context,
@@ -262,35 +316,8 @@ class _BoardTileState extends State<BoardTile> {
                       );
                     });
               }
-              // if (await didWinVertical(tileIndex)) {
-              //   print("Yes correct vertical");
-              //   showDialog(
-              //       context: context,
-              //       builder: (BuildContext context) {
-              //         return DoubleOptionDialogBox(
-              //           title: 'Congratulations!',
-              //           text: "You've won the game",
-              //           firstFunction: () {},
-              //           secondFunction: popFunction,
-              //           firstOptionText: "Play again",
-              //           secondOptionText: "Exit",);
-              //       });
-              // }
-              // if (await didWinHorizontal(tileIndex)) {
-              //   print("Yes correct horizontal");
-              //   showDialog(
-              //       context: context,
-              //       builder: (BuildContext context) {
-              //         return DoubleOptionDialogBox(
-              //           title: 'Congratulations!',
-              //           text: "You've won the game",
-              //           firstFunction: () {},
-              //           secondFunction: popFunction,
-              //           firstOptionText: "Play again",
-              //           secondOptionText: "Exit",);
-              //       });
-              // }
             }
+
           }
         },
         child: Padding(

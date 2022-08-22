@@ -12,12 +12,8 @@ void signIn(GlobalKey<FormState> usernameFormKey, TextEditingController username
     if (snapshot.data() == null) {
       GameUser user = GameUser(username);
       user.addUser();
-    } else {
-      GameUser user = GameUser(username);
     }
     callback();
-  } else {
-    print('yes');
   }
 }
 
@@ -49,7 +45,6 @@ void checkOpponent(GlobalKey<FormState> opponentFormKey, String username, TextEd
                 secondUser: opponentUsername, gameroomId: gameroomId,),
             ));
       } else {
-        print('does not contain');
         gameroom.addGameroom();
         String gameroomId = await gameroom.getGameroomId();
         Navigator.push(

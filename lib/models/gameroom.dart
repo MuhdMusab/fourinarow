@@ -74,7 +74,6 @@ class Gameroom {
         .collection("gamerooms")
         .where('firstUser', isEqualTo: secondUser)
         .where('secondUser', isEqualTo: firstUser).get()).docs.length == 1;
-    print(containsFirstCombination || containsSecondCombination);
     return containsFirstCombination || containsSecondCombination;
   }
 }
