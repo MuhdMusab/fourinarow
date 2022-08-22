@@ -32,16 +32,6 @@ class _PlayScreenState extends State<PlayScreen> {
     //BlocListener<InternetCubit, InternetState>(
 
     return Scaffold(
-      floatingActionButton: ElevatedButton(
-        onPressed: () {
-          // Gameroom gameroom = Gameroom("musab", "musab2");
-          // gameroom.getGameroomId();
-          // gameroom.generateBoard();
-        },
-        child: Text(
-            "Hello"
-        ),
-      ),
       backgroundColor: Palette().backgroundLevelSelection,
       body: BlocListener<InternetCubit, InternetState>(
         listener: (context, state) {
