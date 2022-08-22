@@ -19,7 +19,6 @@ class MyApp extends StatelessWidget {
     required this.connectivity,
   }) : super(key: key);
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return BlocProvider(

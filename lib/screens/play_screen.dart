@@ -1,15 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:four_in_a_row/blocs/internet_cubit.dart';
-import 'package:four_in_a_row/blocs/internet_cubit.dart';
-import 'package:four_in_a_row/models/gameroom.dart';
-import 'package:four_in_a_row/models/user.dart';
 import 'package:four_in_a_row/services/database.dart';
 import 'package:four_in_a_row/style/palette.dart';
-import 'package:four_in_a_row/widgets/board_tile.dart';
-import 'package:four_in_a_row/widgets/cancellable_dialog_box.dart';
 import 'package:four_in_a_row/widgets/uncancellable_dialog_box.dart';
 
 class PlayScreen extends StatefulWidget {

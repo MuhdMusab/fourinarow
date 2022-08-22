@@ -1,10 +1,11 @@
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DoubleOptionDialogBox extends StatefulWidget {
-  final String title, text, firstOptionText, secondOptionText;
+  final String title, text, firstOptionText,
+      secondOptionText, firstUser, secondUser,
+      gameroomId;
   final Function firstFunction;
   final Function secondFunction;
 
@@ -16,6 +17,9 @@ class DoubleOptionDialogBox extends StatefulWidget {
     required this.secondFunction,
     required this.firstOptionText,
     required this.secondOptionText,
+    required this.firstUser,
+    required this.secondUser,
+    required this.gameroomId,
   }) : super(key: key);
 
   @override
@@ -71,7 +75,7 @@ class _DoubleOptionDialogBoxState extends State<DoubleOptionDialogBox> {
                 children: [
                   FlatButton(
                       onPressed: () {
-                        widget.firstFunction();
+                        widget.firstFunction(widget.firstUser, widget.secondUser, widget.gameroomId);
                       },
                       child: Text(
                         widget.firstOptionText,

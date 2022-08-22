@@ -3,8 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:four_in_a_row/screens/play_screen.dart';
 import 'package:four_in_a_row/services/database.dart';
 import 'package:flutter/material.dart';
-import 'package:four_in_a_row/models/tile.dart';
-import 'package:four_in_a_row/widgets/cancellable_dialog_box.dart';
 import 'package:four_in_a_row/widgets/double_option_dialog_box.dart';
 
 class BoardTile extends StatefulWidget {
@@ -55,7 +53,6 @@ class _BoardTileState extends State<BoardTile> {
     await Future.delayed(const Duration(seconds: 5));
     FirebaseFirestore.instance.collection('gamerooms')
         .doc(widget.gameroomId).delete();
-
   }
 
   Color getTileColor(String player) {
@@ -249,15 +246,20 @@ class _BoardTileState extends State<BoardTile> {
                   || await didWinHorizontal(tileIndex)) {
                 print("Yes correct diagonal");
                 showDialog(
+                    barrierDismissible: false,
                     context: context,
                     builder: (BuildContext context) {
                       return DoubleOptionDialogBox(
                         title: 'Congratulations!',
                         text: "You've won the game",
-                        firstFunction: () {},
+                        firstFunction: restartBoard,
                         secondFunction: popFunction,
                         firstOptionText: "Play again",
-                        secondOptionText: "Exit",);
+                        secondOptionText: "Exit",
+                        firstUser: widget.firstUser,
+                        secondUser: widget.secondUser,
+                        gameroomId: widget.gameroomId,
+                      );
                     });
               }
               // if (await didWinVertical(tileIndex)) {
