@@ -36,8 +36,8 @@ void checkOpponent(GlobalKey<FormState> opponentFormKey, String username, TextEd
           });
     } else {
       Gameroom gameroom = Gameroom(username, opponentUsername);
+      String gameroomId = await gameroom.getGameroomId();
       if (await Gameroom.containsGameroom(username, opponentUsername)) {
-        String gameroomId = await gameroom.getGameroomId();
         Navigator.push(
             context,
             MaterialPageRoute(
@@ -46,7 +46,6 @@ void checkOpponent(GlobalKey<FormState> opponentFormKey, String username, TextEd
             ));
       } else {
         gameroom.addGameroom();
-        String gameroomId = await gameroom.getGameroomId();
         Navigator.push(
             context,
             MaterialPageRoute(

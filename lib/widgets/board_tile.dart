@@ -53,7 +53,6 @@ class _BoardTileState extends State<BoardTile> {
   }
 
   Future<bool> didWinVertical(int tileIndex) async {
-    print("vertical");
     DocumentSnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore.instance.collection('gamerooms')
         .doc(widget.gameroomId).get();
     int row = (tileIndex / 7).floor();
@@ -95,7 +94,6 @@ class _BoardTileState extends State<BoardTile> {
   }
 
   Future<bool> didWinDiagonal(int tileIndex) async {
-    print("diagonal");
     DocumentSnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
         .instance.collection('gamerooms')
         .doc(widget.gameroomId).get();
@@ -209,7 +207,6 @@ class _BoardTileState extends State<BoardTile> {
   }
 
   Future<bool> didWinHorizontal(int tileIndex) async {
-    print("horizontal");
     DocumentSnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore.instance.collection('gamerooms')
                                                             .doc(widget.gameroomId).get();
     int row = (tileIndex / 7).floor();
@@ -258,11 +255,10 @@ class _BoardTileState extends State<BoardTile> {
           DocumentSnapshot<Map<String, dynamic>> snapshot = await db.get();
           if (snapshot.data() != null && snapshot.data()!.containsKey(widget.boardIndex.toString())
               && (snapshot.data()![widget.boardIndex.toString()] as Map<String, dynamic>)["player"] == "unknown") {
-            if (await hasEmptyTileBelow(tileIndex) && widget.isFirstUser && widget.isFirstUserTurn
-                || !widget.isFirstUser && !widget.isFirstUserTurn) {
+            if (await hasEmptyTileBelow(tileIndex) && (widget.isFirstUser && widget.isFirstUserTurn
+                || !widget.isFirstUser && !widget.isFirstUserTurn)) {
               int tileToChange = await getEmptyTileBelow(tileIndex);
               if (tileToChange != -1) {
-                print("updated " + tileToChange.toString());
                 db.update({
                   "isFirstUserTurn": !widget.isFirstUserTurn,
                   tileToChange.toString(): {
@@ -290,7 +286,6 @@ class _BoardTileState extends State<BoardTile> {
                 }
               }
             } else if (widget.isFirstUser && widget.isFirstUserTurn || !widget.isFirstUser && !widget.isFirstUserTurn) {
-              print("updated " + tileIndex.toString());
               db.update({
                 "isFirstUserTurn": !widget.isFirstUserTurn,
                 widget.boardIndex.toString(): {
